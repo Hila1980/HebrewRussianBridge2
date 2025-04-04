@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תרגול מילים בעברית | Практика слов на иврите</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .back-link {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #2980b9;
+        }
+        
+        /* סגנון לפעילות הגרירה */
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .quiz-instructions {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        
+        .quiz-items {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .quiz-target {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-target img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .quiz-target-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px 20px 10px;
+        }
+        
+        .quiz-target.correct {
+            border: 2px solid #2ecc71;
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+        }
+        
+        .quiz-words {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .quiz-draggable {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            cursor: grab;
+            margin: 5px;
+            user-select: none;
+            font-size: 1.1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .quiz-draggable:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .quiz-draggable.dragging {
+            opacity: 0.8;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .quiz-draggable.correct {
+            background-color: #2ecc71;
+            cursor: default;
+        }
+        
+        .quiz-result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            min-height: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .quiz-reset {
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .quiz-reset:hover {
+            background-color: #c0392b;
+        }
+        
+        .quiz-success {
+            padding: 20px;
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .quiz-success h3 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .quiz-success p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .quiz-success-button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: white;
+            color: #2ecc71;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .quiz-target {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .quiz-items {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>תרגול מילים בעברית</h1>
+        <div class="subtitle">Практика слов на иврите</div>
+        <a href="index.html" class="back-link">← חזרה לעמוד הראשי | Вернуться на главную</a>
+    </header>
+
+    <div class="quiz-container">
+        <div class="quiz-instructions">
+            <p>גרור את המילים בעברית אל התמונות המתאימות</p>
+            <p><span style="font-size:0.9rem; color:#666;">Перетащите слова на иврите к соответствующим изображениям</span></p>
+        </div>
+        
+        <div class="quiz-items">
+            <!-- כאן יופיעו תמונות המטרה -->
+        </div>
+        
+        <div class="quiz-words">
+            <!-- כאן יופיעו המילים לגרירה -->
+        </div>
+        
+        <div class="quiz-result"></div>
+        
+        <button class="quiz-reset">התחל מחדש | Начать заново</button>
+        
+        <div class="quiz-success">
+            <h3>כל הכבוד! | Молодец!</h3>
+            <p>השלמת את המשימה בהצלחה</p>
+            <p>Вы успешно выполнили задание</p>
+            <a href="#" class="quiz-success-button" onclick="initQuiz(); return false;">נסה שוב | Попробовать снова</a>
+        </div>
+    </div>
+
+    <script>
+        // פונקציות לתרגול
+        const quizContainer = document.querySelector('.quiz-container');
+        const quizItems = document.querySelector('.quiz-items');
+        const quizWords = document.querySelector('.quiz-words');
+        const quizResult = document.querySelector('.quiz-result');
+        const quizReset = document.querySelector('.quiz-reset');
+        const quizSuccess = document.querySelector('.quiz-success');
+        
+        // מערך של מילים ותמונות
+        const allWords = [
+            { hebrew: 'קַלְמָר', image: 'images/kalmar.png', id: 'kalmar' },
+            { hebrew: 'מַחְבֶּרֶת', image: 'images/machberet.png', id: 'machberet' },
+            { hebrew: 'סֵפֶר', image: 'images/sefer.png', id: 'sefer' },
+            { hebrew: 'מָרָק', image: 'images/marak.png', id: 'marak' },
+            { hebrew: 'גֶּזֶר', image: 'images/gezer.png', id: 'gezer' },
+            { hebrew: 'תַּפּוּחַ', image: 'images/tapuach.png', id: 'tapuach' },
+            { hebrew: 'כֶּלֶב', image: 'images/kelev.png', id: 'kelev' },
+            { hebrew: 'חָתוּל', image: 'images/chatul.png', id: 'chatul' },
+            { hebrew: 'צִפּוֹר', image: 'images/tzipor.png', id: 'tzipor' },
+            { hebrew: 'בַּיִת', image: 'images/bayit.png', id: 'bayit' },
+            { hebrew: 'שֶׁמֶשׁ', image: 'images/shemesh.png', id: 'shemesh' },
+            { hebrew: 'מַיִם', image: 'images/mayim.png', id: 'mayim' }
+        ];
+        
+        // פונקציה לבחירה אקראית של מילים מתוך המערך
+        function getRandomWords(count) {
+            const shuffled = [...allWords].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+        
+        // פונקציה לבחירה אקראית של סדר המילים
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+        
+        // פונקציה ליצירת התרגול
+        function initQuiz() {
+            // נקה את התרגול הקודם
+            quizItems.innerHTML = '';
+            quizWords.innerHTML = '';
+            quizResult.textContent = '';
+            quizSuccess.style.display = 'none';
+            
+            // בחר 6 מילים אקראיות
+            const quizWordsSelection = getRandomWords(6);
+            
+            // צור את מטרות הגרירה
+            quizWordsSelection.forEach(word => {
+                const targetContainer = document.createElement('div');
+                targetContainer.className = 'quiz-target-container';
+                
+                const target = document.createElement('div');
+                target.className = 'quiz-target';
+                target.setAttribute('data-word-id', word.id);
+                
+                const img = document.createElement('img');
+                img.src = word.image;
+                img.alt = word.hebrew;
+                
+                target.appendChild(img);
+                targetContainer.appendChild(target);
+                
+                quizItems.appendChild(targetContainer);
+            });
+            
+            // צור את המילים לגרירה
+            const shuffledWords = shuffleArray(quizWordsSelection);
+            
+            shuffledWords.forEach(word => {
+                const draggable = document.createElement('div');
+                draggable.className = 'quiz-draggable';
+                draggable.setAttribute('data-word-id', word.id);
+                draggable.setAttribute('draggable', 'true');
+                draggable.textContent = word.hebrew;
+                
+                draggable.addEventListener('dragstart', function(e) {
+                    this.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', word.id);
+                });
+                
+                draggable.addEventListener('dragend', function() {
+                    this.classList.remove('dragging');
+                });
+                
+                quizWords.appendChild(draggable);
+            });
+            
+            // הוסף אירועי גרירה למטרות
+            const targets = document.querySelectorAll('.quiz-target');
+            
+            targets.forEach(target => {
+                // מניעת התנהגות ברירת המחדל לאפשר גרירה מעל
+                target.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                });
+                
+                // מניעת התנהגות ברירת המחדל לאפשר שחרור
+                target.addEventListener('dragenter', function(e) {
+                    e.preventDefault();
+                    this.style.background = 'rgba(52, 152, 219, 0.1)';
+                });
+                
+                // הסרת סגנון כשיוצאים מהמטרה
+                target.addEventListener('dragleave', function() {
+                    this.style.background = '';
+                });
+                
+                // בדיקת התאמה בשחרור
+                target.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.style.background = '';
+                    
+                    const wordId = e.dataTransfer.getData('text/plain');
+                    const targetWordId = this.getAttribute('data-word-id');
+                    
+                    // בדיקה אם המילה מתאימה למטרה
+                    if (wordId === targetWordId) {
+                        // התאמה נכונה
+                        this.classList.add('correct');
+                        this.style.border = '2px solid #2ecc71';
+                        
+                        // מצא את המילה שנגררה ומסמן אותה כנכונה
+                        const draggedWord = document.querySelector(`.quiz-draggable[data-word-id="${wordId}"]`);
+                        if (draggedWord) {
+                            draggedWord.classList.add('correct');
+                            draggedWord.setAttribute('draggable', 'false');
+                            
+                            // הוסף את המילה למטרה
+                            const wordClone = draggedWord.cloneNode(true);
+                            wordClone.style.position = 'absolute';
+                            wordClone.style.bottom = '0';
+                            wordClone.style.right = '0';
+                            wordClone.style.left = '0';
+                            wordClone.style.borderRadius = '0 0 8px 8px';
+                            wordClone.style.margin = '0';
+                            this.appendChild(wordClone);
+                            
+                            // הסתר את המילה המקורית
+                            draggedWord.style.visibility = 'hidden';
+                            
+                            // נקה את הודעת השגיאה אם קיימת
+                            quizResult.textContent = '';
+                            
+                            // בדוק אם סיימנו את כל המילים
+                            checkCompletion();
+                        }
+                    } else {
+                        // התאמה שגויה - רעידה קלה
+                        this.animate([
+                            { transform: 'translateX(0px)' },
+                            { transform: 'translateX(5px)' },
+                            { transform: 'translateX(-5px)' },
+                            { transform: 'translateX(5px)' },
+                            { transform: 'translateX(0px)' }
+                        ], {
+                            duration: 300,
+                            iterations: 1
+                        });
+                        
+                        // הודעת שגיאה
+                        quizResult.textContent = 'לא מתאים, נסה שוב | Неправильно, попробуйте еще раз';
+                        quizResult.style.color = '#e74c3c';
+                        
+                        // נקה את ההודעה אחרי 2 שניות
+                        setTimeout(() => {
+                            quizResult.textContent = '';
+                        }, 2000);
+                    }
+                });
+            });
+        }
+        
+        // פונקציה לבדיקת סיום התרגול
+        function checkCompletion() {
+            const allTargets = document.querySelectorAll('.quiz-target');
+            const correctTargets = document.querySelectorAll('.quiz-target.correct');
+            
+            if (allTargets.length === correctTargets.length) {
+                // כל המטרות מושלמות
+                quizSuccess.style.display = 'block';
+                
+                // השמע צליל הצלחה אם קיים
+                try {
+                    const successAudio = new Audio('audio/success.mp3');
+                    successAudio.play();
+                } catch (error) {
+                    console.log('No success audio found');
+                }
+            }
+        }
+        
+        // אירוע לאיפוס התרגול
+        quizReset.addEventListener('click', initQuiz);
+        
+        // אתחול התרגול בטעינת העמוד
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>
