@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לימוד עברית לדוברי רוסית | Изучение иврита для русскоговорящих</title>
+    <style>
+        /* סגנון בסיסי */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .nav-tab {
+            padding: 10px 20px;
+            background-color: #ecf0f1;
+            border: 1px solid #bdc3c7;
+            cursor: pointer;
+            margin: 0 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .nav-tab.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .category {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .category-russian {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .word-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .word-card {
+            width: 200px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .word-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .word-image {
+            height: 150px;
+            overflow: hidden;
+        }
+        
+        .word-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .hebrew-word {
+            padding: 10px;
+            font-size: 1.3rem;
+            text-align: center;
+            background-color: #f9f9f9;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .russian-word {
+            padding: 10px;
+            font-size: 1rem;
+            text-align: center;
+            color: #7f8c8d;
+        }
+        
+        .sound-icon {
+            cursor: pointer;
+            margin-right: 8px;
+            color: #3498db;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+        
+        .sound-icon:hover {
+            transform: scale(1.2);
+        }
+        
+        .sound-icon.playing {
+            color: #e74c3c;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        /* סגנון עזר למכשירים ניידים */
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-tab {
+                width: 80%;
+                margin: 5px 0;
+                text-align: center;
+                border-radius: 5px;
+            }
+            
+            .word-card {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        /* סגנון לכפתור התרגול */
+        .quiz-button {
+            display: block;
+            width: 250px;
+            margin: 30px auto;
+            padding: 15px 20px;
+            background-color: #27ae60;
+            color: white;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        
+        .quiz-button:hover {
+            transform: translateY(-5px);
+            background-color: #2ecc71;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>מילים בסיסיות בעברית</h1>
+        <div class="subtitle">Основные слова на иврите</div>
+    </header>
+    
+    <!-- כפתור קישור לדף התרגול -->
+    <a href="quiz.html" class="quiz-button">
+        תרגול המילים | Практика слов
+    </a>
+
+    <div class="nav-tabs">
+        <div class="nav-tab active" data-tab="school">בית ספר | Школа</div>
+        <div class="nav-tab" data-tab="food">אוכל | Еда</div>
+        <div class="nav-tab" data-tab="animals">חיות | Животные</div>
+        <div class="nav-tab" data-tab="various">שונות | Разное</div>
+    </div>
+
+    <div id="school" class="tab-content active">
+        <div class="category">
+            <div>חֲפָצִים בְּבֵית הַסֵּפֶר</div>
+            <div class="category-russian">Школьные принадлежности</div>
+        </div>
+        <div class="word-container">
+            <div class="word-card" data-word="kalmar" data-translation="Пенал">
+                <div class="word-image">
+                    <img src="images/kalmar.png" alt="קלמר - Пенал">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>קַלְמָר</div>
+                <div class="russian-word">Пенал</div>
+            </div>
+            <div class="word-card" data-word="machberet" data-translation="Тетрадь">
+                <div class="word-image">
+                    <img src="images/machberet.png" alt="מחברת - Тетрадь">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>מַחְבֶּרֶת</div>
+                <div class="russian-word">Тетрадь</div>
+            </div>
+            <div class="word-card" data-word="sefer" data-translation="Книга">
+                <div class="word-image">
+                    <img src="images/sefer.png" alt="ספר - Книга">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>סֵפֶר</div>
+                <div class="russian-word">Книга</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="food" class="tab-content">
+        <div class="category">
+            <div>אֹכֶל</div>
+            <div class="category-russian">Еда</div>
+        </div>
+        <div class="word-container">
+            <div class="word-card" data-word="marak" data-translation="Суп">
+                <div class="word-image">
+                    <img src="images/marak.png" alt="מרק - Суп">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>מָרָק</div>
+                <div class="russian-word">Суп</div>
+            </div>
+            <div class="word-card" data-word="gezer" data-translation="Морковь">
+                <div class="word-image">
+                    <img src="images/gezer.png" alt="גזר - Морковь">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>גֶּזֶר</div>
+                <div class="russian-word">Морковь</div>
+            </div>
+            <div class="word-card" data-word="tapuach" data-translation="Яблоко">
+                <div class="word-image">
+                    <img src="images/tapuach.png" alt="תפוח - Яблоко">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>תַּפּוּחַ</div>
+                <div class="russian-word">Яблоко</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="animals" class="tab-content">
+        <div class="category">
+            <div>חַיּוֹת</div>
+            <div class="category-russian">Животные</div>
+        </div>
+        <div class="word-container">
+            <div class="word-card" data-word="kelev" data-translation="Собака">
+                <div class="word-image">
+                    <img src="images/kelev.png" alt="כלב - Собака">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>כֶּלֶב</div>
+                <div class="russian-word">Собака</div>
+            </div>
+            <div class="word-card" data-word="chatul" data-translation="Кот">
+                <div class="word-image">
+                    <img src="images/chatul.png" alt="חתול - Кот">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>חָתוּל</div>
+                <div class="russian-word">Кот</div>
+            </div>
+            <div class="word-card" data-word="tzipor" data-translation="Птица">
+                <div class="word-image">
+                    <img src="images/tzipor.png" alt="ציפור - Птица">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>צִפּוֹר</div>
+                <div class="russian-word">Птица</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="various" class="tab-content">
+        <div class="category">
+            <div>שׁוֹנוֹת</div>
+            <div class="category-russian">Разное</div>
+        </div>
+        <div class="word-container">
+            <div class="word-card" data-word="bayit" data-translation="Дом">
+                <div class="word-image">
+                    <img src="images/bayit.png" alt="בית - Дом">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>בַּיִת</div>
+                <div class="russian-word">Дом</div>
+            </div>
+            <div class="word-card" data-word="shemesh" data-translation="Солнце">
+                <div class="word-image">
+                    <img src="images/shemesh.png" alt="שמש - Солнце">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>שֶׁמֶשׁ</div>
+                <div class="russian-word">Солнце</div>
+            </div>
+            <div class="word-card" data-word="mayim" data-translation="Вода">
+                <div class="word-image">
+                    <img src="images/mayim.png" alt="מים - Вода">
+                </div>
+                <div class="hebrew-word"><span class="sound-icon">🔊</span>מַיִם</div>
+                <div class="russian-word">Вода</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ניהול לשוניות
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // הסרת מצב פעיל מכל הלשוניות
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // הוספת מצב פעיל ללשונית שנלחצה
+                    tab.classList.add('active');
+                    
+                    // הצגת התוכן המתאים
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // ניהול השמע
+            let currentAudio = null; // משתנה לשמירת האודיו הנוכחי
+            let currentIcon = null; // משתנה לשמירת האייקון הנוכחי
+            
+            const soundIcons = document.querySelectorAll('.sound-icon');
+            
+            soundIcons.forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const wordCard = icon.closest('.word-card');
+                    const word = wordCard.getAttribute('data-word');
+                    
+                    // אם יש אודיו שמתנגן כרגע, עוצרים אותו
+                    if (currentAudio) {
+                        currentAudio.pause();
+                        currentAudio.currentTime = 0;
+                        if (currentIcon) {
+                            currentIcon.classList.remove('playing');
+                        }
+                    }
+                    
+                    // הוספת אפקט לאייקון
+                    icon.classList.add('playing');
+                    currentIcon = icon;
+                    
+                    // יצירת אובייקט אודיו חדש
+                    const audio = new Audio(`audio/${word}.mp3`);
+                    currentAudio = audio;
+                    
+                    // השמעת האודיו
+                    audio.play();
+                    
+                    // הסרת האפקט בסיום ההשמעה
+                    audio.onended = function() {
+                        icon.classList.remove('playing');
+                        currentAudio = null;
+                        currentIcon = null;
+                    };
+                    
+                    // במקרה של שגיאה
+                    audio.onerror = function() {
+                        console.error(`Error playing audio for ${word}`);
+                        icon.classList.remove('playing');
+                        currentAudio = null;
+                        currentIcon = null;
+                        
+                        // הצגת התראה במקרה של שגיאה (במצב פיתוח)
+                        alert(`שגיאה בטעינת קובץ השמע: ${word}.mp3`);
+                    };
+                });
+            });
+        });
+    </script>
+</body>
+</html>
