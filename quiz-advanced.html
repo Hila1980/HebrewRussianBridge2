@@ -282,5 +282,291 @@
             <button class="btn btn-check">בדוק | Проверить</button>
             <button class="btn btn-next">הבא | Следующий</button>
             <button class="btn btn-restart">התחל מחדש | Начать заново</button>
+            <button class="btn btn-refresh" onclick="location.reload()" style="background-color: #e67e22;">רענן דף | Обновить</button>
         </div>
     </div>
+    
+    <div class="back-btn">
+        <a href="index.html" class="back-link">חזרה לדף הראשי | Вернуться на главную</a>
+    </div>
+    
+    <footer>
+        <p>© 2025 כל הזכויות שמורות להילה אורבך פריג' | Все права защищены - Хила Орбах Фридж</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // מאגר המילים
+            const wordsDatabase = [
+                // בית ספר
+                { id: "kalmar", hebrew: "קַלְמָר", russian: "Пенал", image: "images/kalmar.png", category: "school" },
+                { id: "machberet", hebrew: "מַחְבֶּרֶת", russian: "Тетрадь", image: "images/machberet.png", category: "school" },
+                { id: "sefer", hebrew: "סֵפֶר", russian: "Книга", image: "images/sefer.png", category: "school" },
+                { id: "yalkut", hebrew: "יַלְקוּט", russian: "Рюкзак", image: "images/yalkut.png", category: "school" },
+                
+                // אוכל
+                { id: "marak", hebrew: "מָרָק", russian: "Суп", image: "images/marak.png", category: "food" },
+                { id: "gezer", hebrew: "גֶּזֶר", russian: "Морковь", image: "images/gezer.png", category: "food" },
+                { id: "tapuach", hebrew: "תַּפּוּחַ", russian: "Яблоко", image: "images/tapuach.png", category: "food" },
+                { id: "beitza", hebrew: "בֵּיצָה", russian: "Яйцо", image: "images/beitza.png", category: "food" },
+                { id: "mitz", hebrew: "מִיץ", russian: "Сок", image: "images/mitz.png", category: "food" },
+                { id: "karich", hebrew: "כָּרִיךְ", russian: "Бутерброд", image: "images/karich.png", category: "food" },
+                { id: "shokolad", hebrew: "שׁוֹקוֹלָד", russian: "Шоколад", image: "images/shokolad.png", category: "food" },
+                { id: "mayim", hebrew: "מַיִם", russian: "Вода", image: "images/mayim.png", category: "food" },
+                
+                // חיות
+                { id: "kelev", hebrew: "כֶּלֶב", russian: "Собака", image: "images/kelev.png", category: "animals" },
+                { id: "chatul", hebrew: "חָתוּל", russian: "Кот", image: "images/chatul.png", category: "animals" },
+                { id: "tzipor", hebrew: "צִפּוֹר", russian: "Птица", image: "images/tzipor.png", category: "animals" },
+                { id: "tanin", hebrew: "תַּנִּין", russian: "Крокодил", image: "images/tanin.png", category: "animals" },
+                { id: "aryeh", hebrew: "אַרְיֵה", russian: "Лев", image: "images/aryeh.png", category: "animals" },
+                { id: "achbar", hebrew: "עַכְבָּר", russian: "Мышь", image: "images/achbar.png", category: "animals" },
+                { id: "akavish", hebrew: "עַכָּבִישׁ", russian: "Паук", image: "images/akavish.png", category: "animals" },
+                { id: "kof", hebrew: "קוֹף", russian: "Обезьяна", image: "images/kof.png", category: "animals" },
+                { id: "chazir", hebrew: "חֲזִיר", russian: "Свинья", image: "images/chazir.png", category: "animals" },
+                { id: "para", hebrew: "פָּרָה", russian: "Корова", image: "images/para.png", category: "animals" },
+                { id: "kivsa", hebrew: "כִּבְשָׂה", russian: "Овца", image: "images/kivsa.png", category: "animals" },
+                
+                // שונות
+                { id: "bayit", hebrew: "בַּיִת", russian: "Дом", image: "images/bayit.png", category: "various" },
+                { id: "shemesh", hebrew: "שֶׁמֶשׁ", russian: "Солнце", image: "images/shemesh.png", category: "various" },
+                { id: "kos", hebrew: "כּוֹס", russian: "Стакан", image: "images/kos.png", category: "various" },
+                { id: "tzalachat", hebrew: "צַלַּחַת", russian: "Тарелка", image: "images/tzalachat.png", category: "various" },
+                { id: "safel", hebrew: "סֵפֶל", russian: "Кружка", image: "images/safel.png", category: "various" }
+            ];
+
+            // משתנים גלובליים
+            let currentWords = [...wordsDatabase];   // עותק של מאגר המילים
+            let currentQuestionIndex = 0;            // אינדקס השאלה הנוכחית
+            let score = 0;                          // ניקוד
+            let totalQuestions = 0;                 // סה"כ שאלות
+            let selectedOption = null;              // האפשרות שנבחרה
+            let currentCorrectAnswer = "";          // התשובה הנכונה הנוכחית
+            
+            // אלמנטים בדף
+            const questionImage = document.querySelector('.question-image');
+            const optionsContainer = document.querySelector('.options-container');
+            const checkButton = document.querySelector('.btn-check');
+            const nextButton = document.querySelector('.btn-next');
+            const restartButton = document.querySelector('.btn-restart');
+            const resultContainer = document.querySelector('.result-container');
+            const scoreElement = document.querySelector('.score');
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            
+            // אתחול המשחק
+            initGame();
+            
+            // פונקציות משחק
+            
+            // אתחול המשחק
+            function initGame() {
+                // העמד את המילים בסדר אקראי
+                shuffleArray(currentWords);
+                currentQuestionIndex = 0;
+                score = 0;
+                totalQuestions = 0;
+                
+                // אפס מצב הממשק
+                checkButton.style.display = 'inline-block';
+                nextButton.style.display = 'none';
+                restartButton.style.display = 'none';
+                resultContainer.style.display = 'none';
+                
+                // טען שאלה ראשונה
+                loadQuestion();
+                
+                // נקה מאזינים קודמים
+                checkButton.removeEventListener('click', checkAnswer);
+                nextButton.removeEventListener('click', loadNextQuestion);
+                restartButton.removeEventListener('click', initGame);
+                
+                // התמודדות עם לחיצות על כפתורים
+                checkButton.addEventListener('click', checkAnswer);
+                nextButton.addEventListener('click', loadNextQuestion);
+                restartButton.addEventListener('click', initGame);
+                
+                // סינון לפי קטגוריה
+                categoryButtons.forEach(button => {
+                    // הסר מאזינים קודמים
+                    button.removeEventListener('click', categoryFilter);
+                    
+                    // הוסף מאזינים חדשים
+                    button.addEventListener('click', categoryFilter);
+                });
+            }
+            
+            // פונקציית סינון לפי קטגוריה
+            function categoryFilter() {
+                // הסרת מצב פעיל מכל הכפתורים
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                // הוספת מצב פעיל לכפתור שנלחץ
+                this.classList.add('active');
+                
+                // סינון מילים לפי קטגוריה
+                const category = this.getAttribute('data-category');
+                if (category === 'all') {
+                    currentWords = [...wordsDatabase];
+                } else {
+                    currentWords = wordsDatabase.filter(word => word.category === category);
+                }
+                
+                // אתחול מחדש של המשחק עם המילים המסוננות
+                shuffleArray(currentWords);
+                currentQuestionIndex = 0;
+                score = 0;
+                totalQuestions = 0;
+                resultContainer.style.display = 'none';
+                loadQuestion();
+            }
+            
+            // טעינת שאלה
+            function loadQuestion() {
+                if (currentQuestionIndex < currentWords.length) {
+                    // טען את השאלה הנוכחית
+                    const currentQuestion = currentWords[currentQuestionIndex];
+                    
+                    // הצג את התמונה
+                    questionImage.src = currentQuestion.image;
+                    questionImage.alt = currentQuestion.russian;
+                    
+                    // שמור את התשובה הנכונה
+                    currentCorrectAnswer = currentQuestion.hebrew;
+                    
+                    // יצירת אפשרויות
+                    createOptions(currentQuestion);
+                    
+                    // נקה בחירה קודמת
+                    selectedOption = null;
+                    
+                    // הצג כפתור בדיקה
+                    checkButton.style.display = 'inline-block';
+                    nextButton.style.display = 'none';
+                } else {
+                    // סיום המשחק
+                    endGame();
+                }
+            }
+            
+            // יצירת אפשרויות
+            function createOptions(currentQuestion) {
+                // נקה אפשרויות קודמות
+                optionsContainer.innerHTML = '';
+                
+                // צור מערך של אפשרויות אקראיות
+                let options = [currentQuestion.hebrew]; // התשובה הנכונה
+                
+                // הוסף 3 תשובות אקראיות נוספות
+                while (options.length < 4) {
+                    const randomIndex = Math.floor(Math.random() * wordsDatabase.length);
+                    const randomOption = wordsDatabase[randomIndex].hebrew;
+                    
+                    // ודא שאין כפילויות
+                    if (!options.includes(randomOption)) {
+                        options.push(randomOption);
+                    }
+                }
+                
+                // ערבב את האפשרויות
+                shuffleArray(options);
+                
+                // הוסף את האפשרויות לדף
+                options.forEach(option => {
+                    const optionElement = document.createElement('div');
+                    optionElement.classList.add('option');
+                    optionElement.textContent = option;
+                    
+                    // הוסף מאזין אירועים
+                    optionElement.addEventListener('click', function() {
+                        // נקה בחירה קודמת
+                        const prevSelected = document.querySelector('.option.selected');
+                        if (prevSelected) {
+                            prevSelected.classList.remove('selected');
+                        }
+                        
+                        // סמן את האפשרות הנוכחית
+                        optionElement.classList.add('selected');
+                        selectedOption = option;
+                    });
+                    
+                    optionsContainer.appendChild(optionElement);
+                });
+            }
+            
+            // בדיקת תשובה
+            function checkAnswer() {
+                if (selectedOption !== null) {
+                    totalQuestions++;
+                    
+                    // אתר את האלמנט שנבחר
+                    const options = document.querySelectorAll('.option');
+                    
+                    options.forEach(option => {
+                        if (option.textContent === currentCorrectAnswer) {
+                            // סמן את התשובה הנכונה
+                            option.classList.add('correct');
+                        } else if (option.textContent === selectedOption && selectedOption !== currentCorrectAnswer) {
+                            // סמן את התשובה השגויה
+                            option.classList.add('incorrect');
+                        }
+                        
+                        // בטל אפשרות לחיצה
+                        option.style.pointerEvents = 'none';
+                    });
+                    
+                    // עדכן ניקוד
+                    if (selectedOption === currentCorrectAnswer) {
+                        score++;
+                    }
+                    
+                    // הצג כפתור הבא
+                    checkButton.style.display = 'none';
+                    
+                    if (currentQuestionIndex < currentWords.length - 1) {
+                        nextButton.style.display = 'inline-block';
+                    } else {
+                        restartButton.style.display = 'inline-block';
+                    }
+                    
+                    // עדכן תוצאה
+                    scoreElement.textContent = `${score}/${totalQuestions}`;
+                    resultContainer.style.display = 'block';
+                } else {
+                    alert('אנא בחר תשובה | Пожалуйста, выберите ответ');
+                }
+            }
+            
+            // טעינת השאלה הבאה
+            function loadNextQuestion() {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+            
+            // סיום המשחק
+            function endGame() {
+                // הצג הודעת סיום
+                questionImage.src = '';
+                questionImage.alt = '';
+                document.querySelector('.question-title').textContent = 'כל הכבוד! סיימת את התרגול';
+                optionsContainer.innerHTML = '';
+                
+                // הצג כפתור התחלה מחדש
+                checkButton.style.display = 'none';
+                nextButton.style.display = 'none';
+                restartButton.style.display = 'inline-block';
+                
+                // עדכן תוצאה סופית
+                scoreElement.textContent = `${score}/${totalQuestions}`;
+                resultContainer.style.display = 'block';
+            }
+            
+            // פונקציה לערבוב מערך
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+            }
+        });
+    </script>
+</body>
+</html>
